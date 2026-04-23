@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VendorVista | AI Site Selection Studio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="page-glow glow-left" aria-hidden="true"></div>
+  <div class="page-glow glow-right" aria-hidden="true"></div>
+
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="#top" aria-label="VendorVista home">
+        <span class="brand-mark">VV</span>
+        <span class="brand-copy">
+          <strong>VendorVista</strong>
+          <small>AI-assisted business site selection</small>
+        </span>
+      </a>
+
+      <nav class="topnav" aria-label="Primary navigation">
+        <a href="#controls">Inputs</a>
+        <a href="#results">Rankings</a>
+        <a href="#forecast">Forecast</a>
+        <a href="#method">Method</a>
+      </nav>
+
+      <a class="ghost-link" href="#method">How scoring works</a>
+    </header>
+
+    <main id="top">
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">Business expansion intelligence</p>
+          <h1>Compare the best vendor locations with MCDA ranking and future land-price prediction.</h1>
+          <p class="hero-text">
+            This module combines business inputs, Google Maps place intelligence, census-driven demographics, and an
+            AI-ready land forecast engine to recommend the strongest site for your next outlet, warehouse, or retail
+            operation.
+          </p>
+
+          <div class="hero-actions">
+            <a class="primary-btn" href="#controls">Run analysis</a>
+            <a class="secondary-btn" href="#method">See data sources</a>
+          </div>
+
+          <div class="hero-stats" aria-label="Platform highlights">
+            <article>
+              <strong>9</strong>
+              <span>MCDA decision factors</span>
+            </article>
+            <article>
+              <strong>Maps + Census</strong>
+              <span>Live data hooks with offline fallback</span>
+            </article>
+            <article>
+              <strong>5-year</strong>
+              <span>Land price outlook with confidence band</span>
+            </article>
+          </div>
+        </div>
+
+        <aside class="hero-panel">
+          <p class="panel-kicker">Module summary</p>
+          <h2>What this app calculates</h2>
+          <ul class="summary-list">
+            <li>Business-fit score using weighted MCDA criteria</li>
+            <li>Population reach and spending power from census-style data</li>
+            <li>Nearby suppliers, competitors, transit nodes, and clusters from maps</li>
+            <li>Estimated occupancy cost versus your budget</li>
+            <li>Future land appreciation forecast for each candidate site</li>
+          </ul>
+          <p class="panel-note">
+            The app works immediately in demo mode. Add real API keys in <code>config.js</code> to switch on live data.
+          </p>
+        </aside>
+      </section>
+
+      <section class="workspace" id="controls">
+        <form class="control-panel" id="analysis-form">
+          <div class="section-head">
+            <div>
+              <p class="section-kicker">Input model</p>
+              <h2>Tell the engine what kind of business you want to place</h2>
+            </div>
+            <span class="status-pill" id="form-status">Demo mode is ready with synthetic market signals.</span>
+          </div>
+
+          <div class="control-grid">
+            <label class="field">
+              <span>Business type</span>
+              <select id="business-type" name="businessType">
+                <option value="restaurant">Restaurant / cafe</option>
+                <option value="grocery">Grocery / supermarket</option>
+                <option value="pharmacy">Pharmacy / clinic store</option>
+                <option value="fashion">Fashion retail</option>
+                <option value="electronics">Electronics showroom</option>
+                <option value="warehouse">Warehouse / fulfillment</option>
+              </select>
+            </label>
+
+            <label class="field">
+              <span>Supplier model</span>
+              <select id="supplier-model" name="supplierModel">
+                <option value="local">Local supplier network</option>
+                <option value="regional" selected>Regional distributor</option>
+                <option value="national">National logistics chain</option>
+                <option value="import">Import-heavy sourcing</option>
+              </select>
+            </label>
+
+            <label class="field field-wide">
+              <span>Target city or search location</span>
+              <input id="target-location" name="targetLocation" type="text" value="Pune, Maharashtra" placeholder="Ex: Pune, Maharashtra">
+            </label>
+
+            <label class="field">
+              <span>Search radius (km)</span>
+              <input id="search-radius" name="searchRadius" type="number" min="1" max="25" value="6">
+            </label>
+
+            <label class="field">
+              <span>Monthly land or lease budget</span>
+              <input id="monthly-budget" name="monthlyBudget" type="number" min="10000" step="5000" value="250000">
+            </label>
+
+            <label class="field">
+              <span>Required space (sq ft)</span>
+              <input id="required-area" name="requiredArea" type="number" min="100" step="100" value="1800">
+            </label>
+
+            <label class="field">
+              <span>Forecast horizon (years)</span>
+              <input id="forecast-years" name="forecastYears" type="number" min="2" max="10" value="5">
+            </label>
+          </div>
+
+          <div class="weight-shell">
+            <div class="weight-head">
+              <div>
+                <p class="section-kicker">Decision weights</p>
+                <h3>MCDA criteria sliders</h3>
+              </div>
+              <p id="weight-total" class="weight-total">Weights auto-normalize at 100%.</p>
+            </div>
+            <div id="weight-sliders" class="weight-grid"></div>
+          </div>
+
+          <div class="action-row">
+            <button class="primary-btn" id="analyze-button" type="submit">Analyze best locations</button>
+            <button class="secondary-btn" id="reset-weights" type="button">Reset weights</button>
+          </div>
+        </form>
+
+        <aside class="integration-panel">
+          <div class="section-head compact">
+            <div>
+              <p class="section-kicker">Integration health</p>
+              <h2>Source connectors</h2>
+            </div>
+          </div>
+
+          <div class="integration-stack">
+            <article class="integration-card" id="google-status-card">
+              <span class="integration-tag">Google Maps</span>
+              <h3 id="google-status-title">Demo maps</h3>
+              <p id="google-status-copy">Add a Google Maps API key in <code>config.js</code> to geocode locations and count nearby business clusters.</p>
+            </article>
+
+            <article class="integration-card" id="census-status-card">
+              <span class="integration-tag">Census</span>
+              <h3 id="census-status-title">Synthetic demographics</h3>
+              <p id="census-status-copy">Population and spending power are currently simulated. US Census tract lookup is available when live mode is enabled.</p>
+            </article>
+
+            <article class="integration-card" id="ai-status-card">
+              <span class="integration-tag">AI forecast</span>
+              <h3 id="ai-status-title">Local forecast engine</h3>
+              <p id="ai-status-copy">The ranking already includes a land-price forecast. You can plug in a secure AI narrative endpoint for richer explanations.</p>
+            </article>
+          </div>
+
+          <div class="insight-card">
+            <p class="insight-kicker">Decision output</p>
+            <h3>What you get after each run</h3>
+            <ul class="summary-list compact-list">
+              <li>Ranked candidate sites</li>
+              <li>Budget-fit check</li>
+              <li>Criteria-level score breakdown</li>
+              <li>Forecast chart for the selected site</li>
+            </ul>
+          </div>
+        </aside>
+      </section>
+
+      <section class="results-panel" id="results">
+        <div class="section-head">
+          <div>
+            <p class="section-kicker">MCDA ranking</p>
+            <h2>Recommended locations</h2>
+          </div>
+          <p class="section-note" id="results-meta">
+            Run the analysis to compare location alternatives.
+          </p>
+        </div>
+        <div id="ranked-results" class="result-grid"></div>
+      </section>
+
+      <section class="analysis-panel">
+        <div class="map-panel">
+          <div class="section-head compact">
+            <div>
+              <p class="section-kicker">Location canvas</p>
+              <h2>Candidate site distribution</h2>
+            </div>
+          </div>
+          <div id="map-stage" class="map-stage" aria-live="polite"></div>
+          <div id="site-list" class="site-list"></div>
+        </div>
+
+        <div class="forecast-panel" id="forecast">
+          <div class="section-head compact">
+            <div>
+              <p class="section-kicker">Land prediction</p>
+              <h2>Future price outlook</h2>
+            </div>
+            <p class="section-note" id="forecast-meta">Select a site to inspect its forecast.</p>
+          </div>
+
+          <div id="forecast-summary" class="forecast-summary"></div>
+          <div id="forecast-chart" class="forecast-chart"></div>
+          <div id="forecast-details" class="forecast-details"></div>
+        </div>
+      </section>
+
+      <section class="method-panel" id="method">
+        <div class="section-head">
+          <div>
+            <p class="section-kicker">Method</p>
+            <h2>How the site selection engine works</h2>
+          </div>
+        </div>
+
+        <div class="method-grid">
+          <article class="method-card">
+            <span>01</span>
+            <h3>Business-aware candidate generation</h3>
+            <p>
+              The app builds nearby candidate zones around your target city, then adjusts the search logic based on your business type
+              and supplier dependence.
+            </p>
+          </article>
+
+          <article class="method-card">
+            <span>02</span>
+            <h3>Maps and cluster intelligence</h3>
+            <p>
+              Google Maps hooks can geocode the area and estimate competitors, supplier nodes, transit access, parking, and
+              complementary businesses around every site.
+            </p>
+          </article>
+
+          <article class="method-card">
+            <span>03</span>
+            <h3>Census-backed demographic layer</h3>
+            <p>
+              Population reach and spending power are mapped into each option. When live mode is disabled or unsupported, the module
+              falls back to demo values so the website still works.
+            </p>
+          </article>
+
+          <article class="method-card">
+            <span>04</span>
+            <h3>MCDA scoring and forecast</h3>
+            <p>
+              Every site is normalized across benefit and cost criteria, scored with weighted MCDA, and paired with a land-price
+              projection so you can balance present fit with future upside.
+            </p>
+          </article>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
